@@ -1,0 +1,1280 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "2.0",
+        "title": "ThirdParty - App",
+        "description": "Qonto ThirdParties API"
+    },
+    "host": "thirdparty.qonto.com",
+    "basePath": "/v2",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "a",
+        "p",
+        "p",
+        "l",
+        "i",
+        "c",
+        "a",
+        "t",
+        "i",
+        "o",
+        "n",
+        "/",
+        "j",
+        "s",
+        "o",
+        "n"
+    ],
+    "produces": [
+        "a",
+        "p",
+        "p",
+        "l",
+        "i",
+        "c",
+        "a",
+        "t",
+        "i",
+        "o",
+        "n",
+        "/",
+        "j",
+        "s",
+        "o",
+        "n"
+    ],
+    "securityDefinitions": {
+        "oauth2": {
+            "type": "oauth2",
+            "flow": "accessCode",
+            "scopes": {
+                "organization.read": "organization.read",
+                "offline_access": "offline_access"
+            },
+            "authorizationUrl": "https://oauth.qonto.com/oauth2/auth",
+            "tokenUrl": "https://oauth.qonto.com/oauth2/token"
+        },
+        "Authorization": {
+            "name": "Authorization",
+            "type": "apiKey",
+            "in": "header"
+        }
+    },
+    "paths": {
+        "/attachments/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "GET_attachments-id",
+                "summary": "Show attachment",
+                "tags": [
+                    "attachments"
+                ],
+                "description": "Obtain the details (e.g: download URL) for a specific attachment. \n\n---\n\nInside Qonto, attachments are files uploaded onto transactions by users. Attachments typically correspond to the *invoice* or *receipt*, and are used to justify the transactions from a bookkeeping standpoint. \n\nYou can retrieve the IDs of those attachments inside each Transaction object, by calling #endpoint:LSh2jq2tcFLCJ9wW3. \n\nProbative attachment is another version of attachment, compliant with [PAdES](https://en.wikipedia.org/wiki/PAdES) standard.\n\nAn attachment object is returned as follows:\n\n```json\n{\n    \"attachment\": {\n        \"id\": \"1ec373a5-e30d-4a70-948d-c8d49e4a4d31\",\n        \"created_at\": \"2019-01-07T16:36:25.862Z\",\n        \"file_name\": \"doc.pdf\",\n        \"file_size\": \"49599\",\n        \"file_content_type\": \"application/pdf\",\n        \"url\": \"https://qonto-dev.s3.eu-central-1.amazonaws.com/production/uploads/attachment/1ec373a5-e30d-4a70-948d-c8d49e4a4d31/5ff8b9fa-4161-4904-ae93-ebc9e34d1614.pdf?response-content-disposition=attachment%3Bfilename%2A%3DUTF-8%27%27doc.pdf&response-content-type=application%2Fpdf&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWLF7G5ORP46XMEA%2F20190108%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20190108T145400Z&X-Amz-Expires=1800&X-Amz-SignedHeaders=host&X-Amz-Signature=7cb89f5363fb5eef8299d03a6602b08843c41aebbe24bffca96b6d11741ccde3\",\n        \"probative_attachment\": {\n            \"status\": \"available\",\n            \"file_name\": \"probated_doc.pdf\",\n            \"file_content_type\": \"application/pdf\",\n            \"file_size\": \"33346\",\n            \"url\": \"https://qonto-dev.s3.eu-central-1.amazonaws.com/production/uploads/probative_attachment/4cb293ca-c0ab-4ed9-aeb2-2028b36359ad/b8c23101-3da3-49d8-b1d6-49bf0335bd7e.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWLF7G5ORP46XMEA%2F20201210%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20201210T160646Z&X-Amz-Expires=1800&X-Amz-SignedHeaders=host&X-Amz-Signature=ac14a9b15aa7a18de633992af8aab7304fb35f61b93538240ccf80f915772403\"\n        }\n    }\n}\n```\n\n**Important**: for security reasons, the `url` you retrieve for each Attachment is only valid for 30 minutes. If you need to download the file after more than 30 minutes, you will need to perform another authenticated call in order to generate a new download URL.\n",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/attachment"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/labels/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "GET_labels-id",
+                "summary": "Show label",
+                "tags": [
+                    "labels"
+                ],
+                "description": "Retrieve all labels within the organization.\n\n---\n\nThe response contains the list of labels that are linked to the authenticated company.\n\nThe `id` field uniquely identifies the label and is used to identify the **label_ids** of a transaction (see #endpoint:LSh2jq2tcFLCJ9wW3)\n\n### Parent\n\nA label can be linked to another in order to create lists.\nThe parent label can be identified thanks to the `parent_id` field.\n",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/label"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/memberships": {
+            "get": {
+                "operationId": "GET_memberships",
+                "summary": "List memberships",
+                "tags": [
+                    "memberships"
+                ],
+                "description": "Retrieve all memberships within the organization.\n\n---\n\nThe response contains the list of memberships that are linked to the authenticated company.\nA membership is a user who's been granted access to the Qonto account of a company. There is no limit currently to the number of memberships a company can have.\n\nThe `id` field uniquely identifies the membership and is used to identify the **initiator** of a transaction (see #endpoint:LSh2jq2tcFLCJ9wW3)\n",
+                "parameters": [
+                    {
+                        "name": "current_page",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/memberships"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/transactions": {
+            "get": {
+                "operationId": "GET_transactions",
+                "summary": "List transactions",
+                "tags": [
+                    "transactions"
+                ],
+                "description": "Retrieve all transactions within a particular bank account.\n\n---\n\nThe response contains the list of transactions that contributed to the bank account's balances (e.g., incomes, transfers, cards). All transactions visible in Qonto's UI can be fetched, as of API V2.\n\n## Attributes details\n\n##### Amount\n\n* The `amount`, `amount_cents` and `currency` correspond to the amount of the transaction in the currency of the bank account (in our case, it will be in **euros** as it is our only supported bank account currency).\n* The `local_amount`, `local_amount_cents` and `local_currency` correspond to the amount of the transaction in the **foreign currency** (if any)\n  * e.g, for a transaction of 10.00 USD, `local_amount_cents` takes a `1000`value, and `local_currency`takes on a `USD` value\n\n\n##### VAT\n\n* The `vat_amount` and `vat_amount_cents` contain the amount of VAT.\n* The `vat_rate` refers to the rate selected or detected. The value can be `-1` for uncategorized rate (e.g in France any value which is not in `0, 2.1, 5.5, 10, 20`) or multiple rates transaction because we do not support them yet.\n  * e.g, for a transaction of 10.00 EUR with 10% VAT, `vat_amount_cents` takes a `91` value, and `vat_rate` takes a `10` value\n\n**Do note:** If you're a user of VAT auto-detection feature, only confirmed VAT information will appear in the response.\n\n\n##### Side\n\n- `credit`: incoming transaction\n- `debit`: outgoing transaction\n\n#### Timestamps\n\nEach transaction contains three timestamps:\n\n* `emitted_at`, the time at which the transaction was first recorded\n* `settled_at`, the time at which the transaction impacted the `balance` and got set to a `completed` status\n* `updated_at`, the time at which the transaction was last updated\n\n**Do note**: *The `settled_at` value can be `null`, for transaction which aren't `completed` (`pending`, `reversed` and  `declined`)*\n\n##### Operation type\n\n- `income`: an incoming transfer\n- `transfer`: an outgoing transfer\n- `card`: a card payment\n- `direct_debit`: a SEPA Direct Debit (collecting payments from other businesses)\n- `qonto_fee`: a Qonto fee (subscription, atm withdrawal, fx card...)\n- `cheque`: a Check cashed on the account\n- `recall`: recall of an incoming transfer (by the emitter beneficiary or bank)\n- `swift_income`: a SWIFT incoming transfer\n\n#### Attachments\n\n- `attachment_ids` contains an array of UUIDs, corresponding to the attachments (up to 5) uploaded on the transaction. You can obtain details for each attachment using #endpoint:LqaS4zJLgJXdCA6kP.\n\n- `attachment_lost` contains a boolean describing whether the attachment of the transaction was marked as lost or not.\n\n- `attachment_required` contains a boolean describing whether the attachment of the transaction was marked as required or not.\n\n## Filters\n\n#### `status`\n\nTransactions can be filtered by status. The `status` query parameter accepts an array of statuses as value. Here is what statuses correspond to:\n\n- `pending`: a transaction that is processing and has impacted the bank account's `auth_balance` but not its `balance`\n- `reversed`: a transaction that used to be processing, but has then been reversed\n- `declined`: a transaction that has been declined\n- `completed`: a transaction that is completed, and has impacted the bank account's `balance`\n\nFor example, if you want to retrieve all transaction statuses, you can use the following filter: `status[]=completed&status[]=declined&status[]=reversed&status[]=pending`\n\n **Do note**: *If no `status` is specified, the API will only return `completed` transactions by default, as they are the only ones that usually make sense in an accounting integration.*\n\n#### `updated_at` / `settled_at`\n\nTransactions can be filtered according to both `updated_at` and `settled_at` fields.\nThis is particularly useful to retrieve only the latest transactions in your application.\nTwo filters are available :\n\n- **updated_at**\n  - `updated_at_from`: Minimum value (e.g: `2019-01-10T11:47:53.123Z`)\n  - `updated_at_to`: Maximum value\n- **settled_at**\n  - `settled_at_from`: Minimum value\n  - `settled_at_to`: Maximum value\n\n**Do note**:\n\n- *You can use one or the other `updated_at` filter (same for `settled_at`), or use them in combination if you want transactions updated within a specific timeframe.*\n- *`updated_at` / `settled_at` filters should have a valid date time format (**ISO 8601** for instance)*\n\n#### Side\n\nTransactions can be filtered using the `side` (credit or debit) query params : `side=credit` or `side=debit`.\n\n#### Operation Type\n\nTransactions can be filtered based on their `operation_type`. An array of values can be passed as query params :\n\n`operation_type[]=card&operation_type[]=transfer&operation_type[]=income`\n\n#### with or wihtout attachment(s)\n\nTransactions can be filtered based on the presence of one or more attachments. This is achieved using the `with_attachments` boolean param :\n\n`with_attachments=false`\n\n## Sorting\n\nTransactions can be sorted by a specific field and order. The `sort_by` query parameter accepts a string defining these two items with the `field:order` format.\n\n#### Field\n\n- Both `updated_at` and `settled_at` values are available.\n- By default the field used to sort transactions is `settled_at`\n\n#### Order\n\n- Two values are available : `asc` (Ascending) / `desc` (Descending)\n- By default the order used to sort transactions is `desc`\n\n**Do note**: You can use a combination of field and order to define how to sort transactions :\n- Only field (e.g `updated_at`, order will have default value `desc`)\n- Only order (e.g `:asc`, field will have default value `settled_at`)\n- Both (e.g `updated_at:asc`)\n\n## Embedded resources\n\nWhen searching transactions, it is possible to require associated resources to be embedded in the JSON response.\n\n#### Labels\n\nFor each transactions, `labels` can be embedded in the response object, using the `includes` params :\n\n`includes[]=labels`\n\n#### Attachments\n\nFor each transactions, `attachments` can be embedded in the response object, using the `includes` params :\n\n`includes[]=attachments`\n",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "iban",
+                        "in": "query",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "type": "array"
+                    },
+                    {
+                        "name": "updated_at_from",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "updated_at_to",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "settled_at_from",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "settled_at_to",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "current_page",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "side",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "operation_type",
+                        "in": "query",
+                        "required": false,
+                        "type": "array"
+                    },
+                    {
+                        "name": "includes",
+                        "in": "query",
+                        "required": false,
+                        "type": "array"
+                    },
+                    {
+                        "name": "with_attachments",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/transactions"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/organizations/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "GET_organizations-id",
+                "summary": "Show organization",
+                "tags": [
+                    "organizations"
+                ],
+                "description": "Retrieve the list and details of a company's bank accounts.\n\n---\n\nThe response contains the list of bank accounts of the authenticated company. \n\nThe `balance` represents the actual amount of money on the account, in Euros. The `authorized_balance` represents the amount available for payments, taking into account transactions that are being processed. [More information here](https://support.qonto.com/hc/en-us/articles/115000493249-How-is-the-balance-of-my-account-calculated-)\n\nThe bank account's `slug` and `iban` will be required for you to retrieve the list of transactions inside that bank account, using  #endpoint:LSh2jq2tcFLCJ9wW3.\n",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/organization"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    },
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/transactions/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "GET_transactions-id",
+                "summary": "Show transaction",
+                "tags": [
+                    "transactions"
+                ],
+                "description": "Retrieve all transactions within a particular bank account.\n\n---\n\nThe response contains the list of transactions that contributed to the bank account's balances (e.g., incomes, transfers, cards). All transactions visible in Qonto's UI can be fetched, as of API V2.\n\n## Attributes details\n\n##### Amount\n\n* The `amount`, `amount_cents` and `currency` correspond to the amount of the transaction in the currency of the bank account (in our case, it will be in **euros** as it is our only supported bank account currency).\n* The `local_amount`, `local_amount_cents` and `local_currency` correspond to the amount of the transaction in the **foreign currency** (if any)\n  * e.g, for a transaction of 10.00 USD, `local_amount_cents` takes a `1000`value, and `local_currency`takes on a `USD` value\n\n\n##### VAT\n\n* The `vat_amount` and `vat_amount_cents` contain the amount of VAT.\n* The `vat_rate` refers to the rate selected or detected. The value can be `-1` for uncategorized rate (e.g in France any value which is not in `0, 2.1, 5.5, 10, 20`) or multiple rates transaction because we do not support them yet.\n  * e.g, for a transaction of 10.00 EUR with 10% VAT, `vat_amount_cents` takes a `91` value, and `vat_rate` takes a `10` value\n\n**Do note:** If you're a user of VAT auto-detection feature, only confirmed VAT information will appear in the response.\n\n\n##### Side\n\n- `credit`: incoming transaction\n- `debit`: outgoing transaction\n\n#### Timestamps\n\nEach transaction contains three timestamps:\n\n* `emitted_at`, the time at which the transaction was first recorded\n* `settled_at`, the time at which the transaction impacted the `balance` and got set to a `completed` status\n* `updated_at`, the time at which the transaction was last updated\n\n**Do note**: *The `settled_at` value can be `null`, for transaction which aren't `completed` (`pending`, `reversed` and  `declined`)*\n\n##### Operation type\n\n- `income`: an incoming transfer\n- `transfer`: an outgoing transfer\n- `card`: a card payment\n- `direct_debit`: a SEPA Direct Debit (collecting payments from other businesses)\n- `qonto_fee`: a Qonto fee (subscription, atm withdrawal, fx card...)\n- `cheque`: a Check cashed on the account\n- `recall`: recall of an incoming transfer (by the emitter beneficiary or bank)\n- `swift_income`: a SWIFT incoming transfer\n\n#### Attachments\n\n- `attachment_ids` contains an array of UUIDs, corresponding to the attachments (up to 5) uploaded on the transaction. You can obtain details for each attachment using #endpoint:LqaS4zJLgJXdCA6kP.\n\n- `attachment_lost` contains a boolean describing whether the attachment of the transaction was marked as lost or not.\n\n- `attachment_required` contains a boolean describing whether the attachment of the transaction was marked as required or not.\n\n## Filters\n\n#### `status`\n\nTransactions can be filtered by status. The `status` query parameter accepts an array of statuses as value. Here is what statuses correspond to:\n\n- `pending`: a transaction that is processing and has impacted the bank account's `auth_balance` but not its `balance`\n- `reversed`: a transaction that used to be processing, but has then been reversed\n- `declined`: a transaction that has been declined\n- `completed`: a transaction that is completed, and has impacted the bank account's `balance`\n\nFor example, if you want to retrieve all transaction statuses, you can use the following filter: `status[]=completed&status[]=declined&status[]=reversed&status[]=pending`\n\n **Do note**: *If no `status` is specified, the API will only return `completed` transactions by default, as they are the only ones that usually make sense in an accounting integration.*\n\n#### `updated_at` / `settled_at`\n\nTransactions can be filtered according to both `updated_at` and `settled_at` fields.\nThis is particularly useful to retrieve only the latest transactions in your application.\nTwo filters are available :\n\n- **updated_at**\n  - `updated_at_from`: Minimum value (e.g: `2019-01-10T11:47:53.123Z`)\n  - `updated_at_to`: Maximum value\n- **settled_at**\n  - `settled_at_from`: Minimum value\n  - `settled_at_to`: Maximum value\n\n**Do note**:\n\n- *You can use one or the other `updated_at` filter (same for `settled_at`), or use them in combination if you want transactions updated within a specific timeframe.*\n- *`updated_at` / `settled_at` filters should have a valid date time format (**ISO 8601** for instance)*\n\n#### Side\n\nTransactions can be filtered using the `side` (credit or debit) query params : `side=credit` or `side=debit`.\n\n#### Operation Type\n\nTransactions can be filtered based on their `operation_type`. An array of values can be passed as query params :\n\n`operation_type[]=card&operation_type[]=transfer&operation_type[]=income`\n\n#### with or wihtout attachment(s)\n\nTransactions can be filtered based on the presence of one or more attachments. This is achieved using the `with_attachments` boolean param :\n\n`with_attachments=false`\n\n## Sorting\n\nTransactions can be sorted by a specific field and order. The `sort_by` query parameter accepts a string defining these two items with the `field:order` format.\n\n#### Field\n\n- Both `updated_at` and `settled_at` values are available.\n- By default the field used to sort transactions is `settled_at`\n\n#### Order\n\n- Two values are available : `asc` (Ascending) / `desc` (Descending)\n- By default the order used to sort transactions is `desc`\n\n**Do note**: You can use a combination of field and order to define how to sort transactions :\n- Only field (e.g `updated_at`, order will have default value `desc`)\n- Only order (e.g `:asc`, field will have default value `settled_at`)\n- Both (e.g `updated_at:asc`)\n\n## Embedded resources\n\nWhen searching transactions, it is possible to require associated resources to be embedded in the JSON response.\n\n#### Labels\n\nFor each transactions, `labels` can be embedded in the response object, using the `includes` params :\n\n`includes[]=labels`\n\n#### Attachments\n\nFor each transactions, `attachments` can be embedded in the response object, using the `includes` params :\n\n`includes[]=attachments`\n",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/transaction"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/labels": {
+            "get": {
+                "operationId": "GET_labels",
+                "summary": "List labels",
+                "tags": [
+                    "labels"
+                ],
+                "description": "Retrieve all labels within the organization.\n\n---\n\nThe response contains the list of labels that are linked to the authenticated company.\n\nThe `id` field uniquely identifies the label and is used to identify the **label_ids** of a transaction (see #endpoint:LSh2jq2tcFLCJ9wW3)\n\n### Parent\n\nA label can be linked to another in order to create lists.\nThe parent label can be identified thanks to the `parent_id` field.\n",
+                "parameters": [
+                    {
+                        "name": "current_page",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/labels"
+                        }
+                    },
+                    "401": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    },
+                    "404": {
+                        "description": "null",
+                        "schema": {
+                            "$ref": "#/definitions/error_model"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "label": {
+            "title": "Label",
+            "required": [
+                "id",
+                "name",
+                "parent_id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "ID of the label"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the label"
+                },
+                "parent_id": {
+                    "type": "string",
+                    "description": "Parent label's ID"
+                }
+            }
+        },
+        "probative_attachment": {
+            "title": "Probative attachment",
+            "required": "probative_attachment",
+            "properties": {
+                "probative_attachment": {
+                    "type": "object",
+                    "required": [
+                        "status"
+                    ],
+                    "properties": {
+                        "status": {
+                            "type": "string",
+                            "description": "Status of probative attachment. Possible values: pending, available, unavailable, corrupted."
+                        },
+                        "file_name": {
+                            "type": "string",
+                            "description": "Filename of probative attachment. Field present only when status is available."
+                        },
+                        "file_size": {
+                            "type": "integer",
+                            "description": "Size of the file (Max size of Qonto files is 10Mo)"
+                        },
+                        "file_content_type": {
+                            "type": "string",
+                            "description": "MIME type of the file. Field present only when status is available."
+                        },
+                        "url": {
+                            "type": "string",
+                            "description": "URL to download the file (Expires after 30 minutes). Field present only when status is available."
+                        }
+                    }
+                }
+            }
+        },
+        "membership": {
+            "title": "Membership",
+            "required": "membership",
+            "properties": {
+                "membership": {
+                    "type": "object",
+                    "required": [
+                        "id",
+                        "first_name",
+                        "last_name"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "description": "ID of the membership"
+                        },
+                        "first_name": {
+                            "type": "string",
+                            "description": "First name of the membership"
+                        },
+                        "last_name": {
+                            "type": "string",
+                            "description": "Last name of the membership"
+                        }
+                    }
+                }
+            }
+        },
+        "organization": {
+            "title": "Organization",
+            "required": "organization",
+            "properties": {
+                "organization": {
+                    "type": "object",
+                    "required": [
+                        "bank_accounts"
+                    ],
+                    "properties": {
+                        "slug": {
+                            "type": "string",
+                            "description": "Slug of the organization (e.g: acme-corp-1111)"
+                        },
+                        "legal_name": {
+                            "type": "string",
+                            "description": "Legal name of the organization"
+                        },
+                        "bank_accounts": {
+                            "type": "array",
+                            "description": "List of the bank accounts",
+                            "required": [
+                                "slug",
+                                "iban",
+                                "bic",
+                                "currency",
+                                "balance",
+                                "balance_cents",
+                                "authorized_balance",
+                                "authorized_balance_cents",
+                                "updated_at"
+                            ],
+                            "properties": {
+                                "slug": {
+                                    "type": "string",
+                                    "description": "Slug of the bank account"
+                                },
+                                "iban": {
+                                    "type": "string",
+                                    "description": "IBAN of the bank account"
+                                },
+                                "bic": {
+                                    "type": "string",
+                                    "description": "BIC of the bank account"
+                                },
+                                "currency": {
+                                    "type": "string",
+                                    "description": "Currency code of the account (Can only be EUR, for now)"
+                                },
+                                "balance": {
+                                    "type": "float",
+                                    "description": "Amount of money on the account, in euros"
+                                },
+                                "balance_cents": {
+                                    "type": "integer",
+                                    "description": "Amount of money on the account, in euro cents"
+                                },
+                                "authorized_balance": {
+                                    "type": "float",
+                                    "description": "Amount of money available for payment from the account, in euros"
+                                },
+                                "authorized_balance_cents": {
+                                    "type": "integer",
+                                    "description": "Amount of money available for payment from the account, in euro cents"
+                                },
+                                "updated_at": {
+                                    "type": "string",
+                                    "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                                    "description": "Date at which the bank account was last updated"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "memberships": {
+            "title": "Memberships",
+            "required": [
+                "memberships"
+            ],
+            "properties": {
+                "memberships": {
+                    "type": "array",
+                    "description": null,
+                    "required": [
+                        "id",
+                        "first_name",
+                        "last_name"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "description": "ID of the membership"
+                        },
+                        "first_name": {
+                            "type": "string",
+                            "description": "First name of the membership"
+                        },
+                        "last_name": {
+                            "type": "string",
+                            "description": "Last name of the membership"
+                        }
+                    }
+                }
+            }
+        },
+        "transaction": {
+            "title": "Transaction",
+            "required": "transaction",
+            "properties": {
+                "transaction": {
+                    "type": "object",
+                    "required": [
+                        "transaction_id",
+                        "amount",
+                        "amount_cents",
+                        "local_amount",
+                        "local_amount_cents",
+                        "side",
+                        "operation_type",
+                        "currency",
+                        "local_currency",
+                        "label",
+                        "emitted_at",
+                        "updated_at",
+                        "status",
+                        "attachments",
+                        "labels"
+                    ],
+                    "properties": {
+                        "transaction_id": {
+                            "type": "string",
+                            "description": "ID of the transaction (e.g: acme-corp-1111-1-transaction-123)"
+                        },
+                        "amount": {
+                            "type": "float",
+                            "description": "Amount of the transaction, in euros"
+                        },
+                        "amount_cents": {
+                            "type": "integer",
+                            "description": "Amount of the transaction, in euro cents"
+                        },
+                        "attachment_ids": {
+                            "type": "array",
+                            "description": "List of attachments' id"
+                        },
+                        "local_amount": {
+                            "type": "float",
+                            "description": "Amount in the local_currency"
+                        },
+                        "local_amount_cents": {
+                            "type": "integer",
+                            "description": "Amount in cents of the local_currency"
+                        },
+                        "side": {
+                            "type": "string",
+                            "description": "",
+                            "enum": [
+                                "debit",
+                                "credit"
+                            ]
+                        },
+                        "operation_type": {
+                            "type": "string",
+                            "description": "",
+                            "enum": [
+                                "transfer",
+                                "card",
+                                "direct_debit",
+                                "income",
+                                "qonto_fee",
+                                "cheque",
+                                "recall",
+                                "swift_income"
+                            ]
+                        },
+                        "currency": {
+                            "type": "string",
+                            "description": "ISO 4217 currency code of the bank account (can only be `EUR`, currently)"
+                        },
+                        "local_currency": {
+                            "type": "string",
+                            "description": "ISO 4217 currency code of the bank account (can be any currency)"
+                        },
+                        "label": {
+                            "type": "string",
+                            "description": "Counterparty of the transaction (e.g: Amazon)"
+                        },
+                        "settled_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date the transaction impacted the balance of the account"
+                        },
+                        "emitted_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date at which the transaction impacted the authorized balance of the account"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date at which the transaction was last updated"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "",
+                            "enum": [
+                                "pending",
+                                "reversed",
+                                "declined",
+                                "completed"
+                            ]
+                        },
+                        "note": {
+                            "type": "string",
+                            "description": "Memo added by the user on the transaction"
+                        },
+                        "reference": {
+                            "type": "string",
+                            "description": "Message sent along income, transfer, direct_debit and swift_income transactions"
+                        },
+                        "vat_amount": {
+                            "type": "float",
+                            "description": "Amount of VAT filled in on the transaction, in euros"
+                        },
+                        "vat_amount_cents": {
+                            "type": "integer",
+                            "description": "Amount of VAT filled in on the transaction, in euro cents"
+                        },
+                        "vat_rate": {
+                            "type": "float",
+                            "description": "",
+                            "enum": [
+                                "-1",
+                                "0",
+                                "2.1",
+                                "5.5",
+                                "10",
+                                "20"
+                            ]
+                        },
+                        "initiator_id": {
+                            "type": "string",
+                            "description": "ID of the membership who initiated the transaction"
+                        },
+                        "label_ids": {
+                            "type": "array",
+                            "description": "List of labels' id"
+                        },
+                        "attachment_lost": {
+                            "type": "boolean",
+                            "description": "Indicates if the transaction's attachment was lost (default: false)"
+                        },
+                        "attachment_required": {
+                            "type": "boolean",
+                            "description": "Indicates if the transaction's attachment is required (default: true)"
+                        },
+                        "card_last_digits": {
+                            "type": "string",
+                            "description": "cards PAN last 4 digits. null if not a card transaction."
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "category of the transaction. Ex: salary, etc"
+                        },
+                        "attachments": {
+                            "type": "array",
+                            "description": "transaction attachments",
+                            "required": [
+                                "created_at",
+                                "file_name",
+                                "file_size",
+                                "file_content_type",
+                                "url"
+                            ],
+                            "properties": {
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                                    "description": "Timestamp of the file upload"
+                                },
+                                "file_name": {
+                                    "type": "string",
+                                    "description": "Name of the file"
+                                },
+                                "file_size": {
+                                    "type": "integer",
+                                    "description": "Size of the file (Max size of Qonto files is 10Mo)"
+                                },
+                                "file_content_type": {
+                                    "type": "string",
+                                    "description": "MIME type of the file"
+                                },
+                                "url": {
+                                    "type": "string",
+                                    "description": "URL to download the file (Expires after 30 minutes)"
+                                }
+                            }
+                        },
+                        "labels": {
+                            "type": "array",
+                            "description": "transaction labels",
+                            "required": [
+                                "id",
+                                "name",
+                                "parent_id"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "ID of the label"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "Name of the label"
+                                },
+                                "parent_id": {
+                                    "type": "string",
+                                    "description": "Parent label's ID"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "transactions": {
+            "title": "Transactions",
+            "required": [
+                "transactions"
+            ],
+            "properties": {
+                "transactions": {
+                    "type": "array",
+                    "description": null,
+                    "required": [
+                        "transaction_id",
+                        "amount",
+                        "amount_cents",
+                        "local_amount",
+                        "local_amount_cents",
+                        "side",
+                        "operation_type",
+                        "currency",
+                        "local_currency",
+                        "label",
+                        "emitted_at",
+                        "updated_at",
+                        "status",
+                        "attachments",
+                        "labels"
+                    ],
+                    "properties": {
+                        "transaction_id": {
+                            "type": "string",
+                            "description": "ID of the transaction (e.g: acme-corp-1111-1-transaction-123)"
+                        },
+                        "amount": {
+                            "type": "float",
+                            "description": "Amount of the transaction, in euros"
+                        },
+                        "amount_cents": {
+                            "type": "integer",
+                            "description": "Amount of the transaction, in euro cents"
+                        },
+                        "attachment_ids": {
+                            "type": "array",
+                            "description": "List of attachments' id"
+                        },
+                        "local_amount": {
+                            "type": "float",
+                            "description": "Amount in the local_currency"
+                        },
+                        "local_amount_cents": {
+                            "type": "integer",
+                            "description": "Amount in cents of the local_currency"
+                        },
+                        "side": {
+                            "type": "string",
+                            "description": "",
+                            "enum": [
+                                "debit",
+                                "credit"
+                            ]
+                        },
+                        "operation_type": {
+                            "type": "string",
+                            "description": "",
+                            "enum": [
+                                "transfer",
+                                "card",
+                                "direct_debit",
+                                "income",
+                                "qonto_fee",
+                                "cheque",
+                                "recall",
+                                "swift_income"
+                            ]
+                        },
+                        "currency": {
+                            "type": "string",
+                            "description": "ISO 4217 currency code of the bank account (can only be `EUR`, currently)"
+                        },
+                        "local_currency": {
+                            "type": "string",
+                            "description": "ISO 4217 currency code of the bank account (can be any currency)"
+                        },
+                        "label": {
+                            "type": "string",
+                            "description": "Counterparty of the transaction (e.g: Amazon)"
+                        },
+                        "settled_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date the transaction impacted the balance of the account"
+                        },
+                        "emitted_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date at which the transaction impacted the authorized balance of the account"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date at which the transaction was last updated"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "",
+                            "enum": [
+                                "pending",
+                                "reversed",
+                                "declined",
+                                "completed"
+                            ]
+                        },
+                        "note": {
+                            "type": "string",
+                            "description": "Memo added by the user on the transaction"
+                        },
+                        "reference": {
+                            "type": "string",
+                            "description": "Message sent along income, transfer, direct_debit and swift_income transactions"
+                        },
+                        "vat_amount": {
+                            "type": "float",
+                            "description": "Amount of VAT filled in on the transaction, in euros"
+                        },
+                        "vat_amount_cents": {
+                            "type": "integer",
+                            "description": "Amount of VAT filled in on the transaction, in euro cents"
+                        },
+                        "vat_rate": {
+                            "type": "float",
+                            "description": "",
+                            "enum": [
+                                "-1",
+                                "0",
+                                "2.1",
+                                "5.5",
+                                "10",
+                                "20"
+                            ]
+                        },
+                        "initiator_id": {
+                            "type": "string",
+                            "description": "ID of the membership who initiated the transaction"
+                        },
+                        "label_ids": {
+                            "type": "array",
+                            "description": "List of labels' id"
+                        },
+                        "attachment_lost": {
+                            "type": "boolean",
+                            "description": "Indicates if the transaction's attachment was lost (default: false)"
+                        },
+                        "attachment_required": {
+                            "type": "boolean",
+                            "description": "Indicates if the transaction's attachment is required (default: true)"
+                        },
+                        "card_last_digits": {
+                            "type": "string",
+                            "description": "cards PAN last 4 digits. null if not a card transaction."
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "category of the transaction. Ex: salary, etc"
+                        },
+                        "attachments": {
+                            "type": "array",
+                            "description": "transaction attachments",
+                            "required": [
+                                "created_at",
+                                "file_name",
+                                "file_size",
+                                "file_content_type",
+                                "url"
+                            ],
+                            "properties": {
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                                    "description": "Timestamp of the file upload"
+                                },
+                                "file_name": {
+                                    "type": "string",
+                                    "description": "Name of the file"
+                                },
+                                "file_size": {
+                                    "type": "integer",
+                                    "description": "Size of the file (Max size of Qonto files is 10Mo)"
+                                },
+                                "file_content_type": {
+                                    "type": "string",
+                                    "description": "MIME type of the file"
+                                },
+                                "url": {
+                                    "type": "string",
+                                    "description": "URL to download the file (Expires after 30 minutes)"
+                                }
+                            }
+                        },
+                        "labels": {
+                            "type": "array",
+                            "description": "transaction labels",
+                            "required": [
+                                "id",
+                                "name",
+                                "parent_id"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "ID of the label"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "Name of the label"
+                                },
+                                "parent_id": {
+                                    "type": "string",
+                                    "description": "Parent label's ID"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "bank_account": {
+            "title": "Bank account",
+            "required": "bank_account",
+            "properties": {
+                "bank_account": {
+                    "type": "object",
+                    "required": [
+                        "slug",
+                        "iban",
+                        "bic",
+                        "currency",
+                        "balance",
+                        "balance_cents",
+                        "authorized_balance",
+                        "authorized_balance_cents",
+                        "updated_at"
+                    ],
+                    "properties": {
+                        "slug": {
+                            "type": "string",
+                            "description": "Slug of the bank account"
+                        },
+                        "iban": {
+                            "type": "string",
+                            "description": "IBAN of the bank account"
+                        },
+                        "bic": {
+                            "type": "string",
+                            "description": "BIC of the bank account"
+                        },
+                        "currency": {
+                            "type": "string",
+                            "description": "Currency code of the account (Can only be EUR, for now)"
+                        },
+                        "balance": {
+                            "type": "float",
+                            "description": "Amount of money on the account, in euros"
+                        },
+                        "balance_cents": {
+                            "type": "integer",
+                            "description": "Amount of money on the account, in euro cents"
+                        },
+                        "authorized_balance": {
+                            "type": "float",
+                            "description": "Amount of money available for payment from the account, in euros"
+                        },
+                        "authorized_balance_cents": {
+                            "type": "integer",
+                            "description": "Amount of money available for payment from the account, in euro cents"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                            "description": "Date at which the bank account was last updated"
+                        }
+                    }
+                }
+            }
+        },
+        "labels": {
+            "title": "Labels",
+            "required": [
+                "labels"
+            ],
+            "properties": {
+                "labels": {
+                    "type": "array",
+                    "description": null,
+                    "required": [
+                        "id",
+                        "name",
+                        "parent_id"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "description": "ID of the label"
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Name of the label"
+                        },
+                        "parent_id": {
+                            "type": "string",
+                            "description": "Parent label's ID"
+                        }
+                    }
+                }
+            }
+        },
+        "error_model": {
+            "title": "Error model",
+            "required": "error_model",
+            "properties": {
+                "error_model": {
+                    "type": "object",
+                    "required": [
+                        "code",
+                        "message"
+                    ],
+                    "properties": {
+                        "code": {
+                            "type": "integer",
+                            "description": ""
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": ""
+                        }
+                    }
+                }
+            }
+        },
+        "attachment": {
+            "title": "Attachment",
+            "required": [
+                "created_at",
+                "file_name",
+                "file_size",
+                "file_content_type",
+                "url",
+                "probative_attachment"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+                    "description": "Timestamp of the file upload"
+                },
+                "file_name": {
+                    "type": "string",
+                    "description": "Name of the file"
+                },
+                "file_size": {
+                    "type": "integer",
+                    "description": "Size of the file (Max size of Qonto files is 10Mo)"
+                },
+                "file_content_type": {
+                    "type": "string",
+                    "description": "MIME type of the file"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "URL to download the file (Expires after 30 minutes)"
+                },
+                "probative_attachment": {
+                    "type": "object",
+                    "description": "Probative version of attachment",
+                    "required": [
+                        "status"
+                    ],
+                    "properties": {
+                        "status": {
+                            "type": "string",
+                            "description": "Status of probative attachment. Possible values: pending, available, unavailable, corrupted."
+                        },
+                        "file_name": {
+                            "type": "string",
+                            "description": "Filename of probative attachment. Field present only when status is available."
+                        },
+                        "file_size": {
+                            "type": "integer",
+                            "description": "Size of the file (Max size of Qonto files is 10Mo)"
+                        },
+                        "file_content_type": {
+                            "type": "string",
+                            "description": "MIME type of the file. Field present only when status is available."
+                        },
+                        "url": {
+                            "type": "string",
+                            "description": "URL to download the file (Expires after 30 minutes). Field present only when status is available."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
